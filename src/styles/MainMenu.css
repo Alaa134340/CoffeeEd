@@ -1,0 +1,103 @@
+.menu-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.category-section {
+  margin-bottom: 50px;
+}
+
+.category-title {
+  text-transform: capitalize;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #382822;
+ font-family: 'Lobster', cursive;
+  
+}
+
+.items-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.menu-card {
+  background: #fff5f0;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  width: 250px;
+  padding: 15px;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.menu-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.menu-card h3 {
+  margin: 10px 0 5px;
+  font-size: 1.2rem;
+  color: #382822;
+}
+
+.menu-card p {
+  margin: 5px 0;
+}
+
+.menu-card .price {
+  font-weight: bold;
+  color: #bf6b53;
+}
+
+.menu-card:hover {
+  transform: scale(1.05);
+}
+
+.add-to-order-btn {
+  background-color: #5a3520;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.add-to-order-btn:hover {
+  background-color: #402417;
+  transform: translateY(-2px);
+}
+
+.notification {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  background-color: #5a3520;
+  color: white;
+  padding: 15px 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  z-index: 1000;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

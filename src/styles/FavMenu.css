@@ -1,0 +1,66 @@
+.costumersFavorites {
+  width: 100%;
+  min-height: 100vh;
+  padding: 40px 20px;
+  background-color: #e5d3c6;
+  border-radius: 12px;
+}
+
+.menuTitle {
+  font-family: 'Lobster', cursive;
+  text-align: center;
+  color: #382822;
+  font-size: 3rem;
+  margin-bottom: 40px;
+}
+
+.FavoritesList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  padding: 20px;
+}
+
+.menuItem {
+  width: 300px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.menuItem:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.menuItem > div {
+  width: 100%;
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.menuItem h1 {
+  font-size: 1.5rem;
+  color: #382822;
+  margin: 15px;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.menuItem p {
+  color: #666;
+  margin: 0 15px 15px;
+  font-size: 1rem;
+}
+
+.menuItem p:last-child {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #aa8a49;
+  margin-bottom: 20px;
+}
