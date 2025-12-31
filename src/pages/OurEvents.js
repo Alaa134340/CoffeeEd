@@ -54,7 +54,9 @@ function OurEvents() {
             <div className="card mb-4 shadow-lg border-0" style={{ backgroundColor: "#E8D7C5" }} key={event.id}>
               <div className="row g-0">
                 <div className="col-md-4">
-                  {/* Optionally add an image field to events and display here */}
+                  {event.image_path && (
+                    <img src={event.image_path} alt={event.name} style={{ width: '100%', height: '250px', objectFit: 'cover' }} />
+                  )}
                 </div>
                 <div className="col-md-8">
                   <div className="card-body">

@@ -78,7 +78,7 @@ function Menu({ addToOrder }) {
             <div className="items-grid">
               {menuData[category].map((item, index) => (
                 <div className="menu-card" key={item.id || index}>
-                  <img src={item.image || 'https://via.placeholder.com/150'} alt={item.name} />
+                  <img src={item.image_path || 'https://via.placeholder.com/150'} alt={item.name} />
                   <h3>{item.name}</h3>
                   <p>{item.description}</p>
                   <p className="price">${parseFloat(item.price).toFixed(2)}</p>
