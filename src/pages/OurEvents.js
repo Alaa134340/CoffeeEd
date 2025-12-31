@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import API_URL from '../config';
 import { isAdminLoggedIn } from "../utils/auth";
 
 function OurEvents() {
@@ -10,13 +11,20 @@ function OurEvents() {
 
   const fetchEvents = () => {
     setLoading(true);
-    fetch("/api/events")
+    fetch(`${API_URL}/api/events`)
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch events");
         return res.json();
       })
       .then(data => {
-        setEvents(data);
+        // Fix image paths to be absolute
+        const fixedData = data.map(event => ({
+          ...event,
+          image_path: event.image_path ? 
+            (event.image_path.startsWith('http') ? event.image_path : `${API_URL}${event.image_path}`) 
+            : null
+        }));
+        setEvents(fixedData);
         setLoading(false);
       })
       .catch(() => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import "../styles/YourOrder.css";
+import "../styles/Orders.css";
+import API_URL from "../config";
 
 function UserOrders() {
   const [orders, setOrders] = useState([]);
@@ -19,7 +20,7 @@ function UserOrders() {
         return;
       }
 
-      const response = await fetch("http://localhost:5000/api/myorders", {
+      const response = await fetch(`${API_URL}/api/myorders`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -41,26 +42,36 @@ function UserOrders() {
   };
 
   if (loading) {
-    return <div className="container mt-5"><p>Loading your orders...</p></div>;
+    return (
+      <div className="orders-container">
+        <div className="loading">Loading your orders...</div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="container mt-5"><p className="text-danger">{error}</p></div>;
+    return (
+      <div className="orders-container">
+        <div className="error-message">{error}</div>
+      </div>
+    );
   }
 
   return (
-    <div className="container mt-5">
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h2>Your Orders</h2>
-        <button className="btn btn-primary" onClick={fetchUserOrders}>
-          Refresh Orders
-        </button>
-      </div>
+    <div className="orders-container">
+      <h1>Your Orders</h1>
+      <button className="refresh-btn" onClick={fetchUserOrders}>
+        Refresh Orders
+      </button>
       {orders.length === 0 ? (
-        <p>You have no orders yet.</p>
+        <div className="empty-state">
+          
+          <p>You have no orders yet.</p>
+          <p>Start ordering from our menu!</p>
+        </div>
       ) : (
-        <table className="table table-striped table-hover">
-          <thead className="table-dark">
+        <table className="orders-table">
+          <thead>
             <tr>
               <th>Order ID</th>
               <th>Item</th>
@@ -71,10 +82,10 @@ function UserOrders() {
           <tbody>
             {orders.map((order) => (
               <tr key={order.id}>
-                <td>{order.id}</td>
-                <td>{order.item}</td>
-                <td>{order.quantity}</td>
-                <td>{new Date(order.order_date).toLocaleDateString()}</td>
+                <td data-label="Order ID">{order.id}</td>
+                <td data-label="Item">{order.item}</td>
+                <td data-label="Quantity">{order.quantity}</td>
+                <td data-label="Order Date">{new Date(order.order_date).toLocaleDateString()}</td>
               </tr>
             ))}
           </tbody>

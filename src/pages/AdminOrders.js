@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import "../styles/YourOrder.css";
+import "../styles/Orders.css";
+import API_URL from "../config";
 
 function AdminOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     fetchAllOrders();
@@ -21,7 +23,7 @@ function AdminOrders() {
         return;
       }
 
-      const response = await fetch("http://localhost:5000/api/orders", {
+      const response = await fetch(`${API_URL}/api/orders`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -43,9 +45,13 @@ function AdminOrders() {
   };
 
   const deleteOrder = async (orderId) => {
+    if (!window.confirm("Are you sure you want to delete this order?")) {
+      return;
+    }
+
     try {
       const userId = localStorage.getItem("userId");
-      const response = await fetch(`http://localhost:5000/api/orders/${orderId}`, {
+      const response = await fetch(`${API_URL}/api/orders/${orderId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -58,28 +64,44 @@ function AdminOrders() {
       }
 
       setOrders((prev) => prev.filter((order) => order.id !== orderId));
-      alert("Order deleted successfully");
+      setSuccessMessage("Order deleted successfully");
+      setTimeout(() => setSuccessMessage(""), 3000);
     } catch (err) {
-      alert(err.message);
+      setError(err.message);
     }
   };
 
   if (loading) {
-    return <div className="container mt-5"><p>Loading orders...</p></div>;
+    return (
+      <div className="orders-container">
+        <div className="loading">Loading orders...</div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="container mt-5"><p className="text-danger">{error}</p></div>;
+    return (
+      <div className="orders-container">
+        <div className="error-message">{error}</div>
+      </div>
+    );
   }
 
   return (
-    <div className="container mt-5">
-      <h2>All Orders (Admin)</h2>
+    <div className="orders-container">
+      <h1>All Orders</h1>
+      {successMessage && <div className="success-message">✓ {successMessage}</div>}
+      <button className="refresh-btn" onClick={fetchAllOrders}>
+         Refresh Orders
+      </button>
       {orders.length === 0 ? (
-        <p>No orders found.</p>
+        <div className="empty-state">
+         
+          <p>No orders found.</p>
+        </div>
       ) : (
-        <table className="table table-striped table-hover">
-          <thead className="table-dark">
+        <table className="orders-table">
+          <thead>
             <tr>
               <th>Order ID</th>
               <th>User ID</th>
@@ -92,17 +114,17 @@ function AdminOrders() {
           <tbody>
             {orders.map((order) => (
               <tr key={order.id}>
-                <td>{order.id}</td>
-                <td>{order.user_id}</td>
-                <td>{order.item}</td>
-                <td>{order.quantity}</td>
-                <td>{new Date(order.order_date).toLocaleDateString()}</td>
-                <td>
+                <td data-label="Order ID">{order.id}</td>
+                <td data-label="User ID">{order.user_id}</td>
+                <td data-label="Item">{order.item}</td>
+                <td data-label="Quantity">{order.quantity}</td>
+                <td data-label="Order Date">{new Date(order.order_date).toLocaleDateString()}</td>
+                <td data-label="Actions">
                   <button
-                    className="btn btn-danger btn-sm"
+                    className="delete-btn"
                     onClick={() => deleteOrder(order.id)}
                   >
-                    Delete
+                     Delete
                   </button>
                 </td>
               </tr>

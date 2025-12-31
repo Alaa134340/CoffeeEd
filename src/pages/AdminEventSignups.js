@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import "../styles/YourOrder.css";
+import "../styles/Orders.css";
+import API_URL from "../config";
 
 function AdminEventSignups() {
   const [signups, setSignups] = useState([]);
@@ -19,7 +20,7 @@ function AdminEventSignups() {
         return;
       }
 
-      const response = await fetch("http://localhost:5000/api/event/signups", {
+      const response = await fetch(`${API_URL}/api/event/signups`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -41,27 +42,36 @@ function AdminEventSignups() {
   };
 
   if (loading) {
-    return <div className="container mt-5"><p>Loading event signups...</p></div>;
+    return (
+      <div className="orders-container">
+        <div className="loading">Loading event signups...</div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="container mt-5"><p className="text-danger">{error}</p></div>;
+    return (
+      <div className="orders-container">
+        <div className="error-message">{error}</div>
+      </div>
+    );
   }
 
   return (
-    <div className="container mt-5">
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h2>Event Signups</h2>
-        <button className="btn btn-primary" onClick={fetchEventSignups}>
-          Refresh
-        </button>
-      </div>
+    <div className="orders-container">
+      <h1>Event Signups</h1>
+      <button className="refresh-btn" onClick={fetchEventSignups}>
+        Refresh
+      </button>
       
       {signups.length === 0 ? (
-        <p>No event signups yet.</p>
+        <div className="empty-state">
+          
+          <p>No event signups yet.</p>
+        </div>
       ) : (
-        <table className="table table-striped table-hover">
-          <thead className="table-dark">
+        <table className="orders-table">
+          <thead>
             <tr>
               <th>ID</th>
               <th>Username</th>
@@ -74,12 +84,12 @@ function AdminEventSignups() {
           <tbody>
             {signups.map((signup) => (
               <tr key={signup.id}>
-                <td>{signup.id}</td>
-                <td>{signup.username}</td>
-                <td>{signup.email}</td>
-                <td>{signup.age}</td>
-                <td>{signup.event_name}</td>
-                <td>{new Date(signup.signup_date).toLocaleDateString()}</td>
+                <td data-label="ID">{signup.id}</td>
+                <td data-label="Username">{signup.username}</td>
+                <td data-label="Email">{signup.email}</td>
+                <td data-label="Age">{signup.age}</td>
+                <td data-label="Event">{signup.event_name}</td>
+                <td data-label="Signup Date">{new Date(signup.signup_date).toLocaleDateString()}</td>
               </tr>
             ))}
           </tbody>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import "../styles/MainMenu.css";
-
+import API_URL from '../config';
 import { isAdminLoggedIn } from "../utils/auth";
 import { Link } from "react-router-dom";
 function Menu({ addToOrder }) {
@@ -11,17 +11,21 @@ function Menu({ addToOrder }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('/api/menu')
+    fetch(`${API_URL}/api/menu`)
       .then((res) => {
         if (!res.ok) throw new Error('Failed to fetch menu');
         return res.json();
       })
       .then((data) => {
-        // Group items by category
+        // Group items by category and fix image paths
         const grouped = {};
         data.forEach(item => {
           if (!grouped[item.category]) grouped[item.category] = [];
-          grouped[item.category].push(item);
+          // Ensure image path is absolute
+          const imagePath = item.image_path ? 
+            (item.image_path.startsWith('http') ? item.image_path : `${API_URL}${item.image_path}`) 
+            : null;
+          grouped[item.category].push({ ...item, image_path: imagePath });
         });
         setMenuData(grouped);
         setLoading(false);

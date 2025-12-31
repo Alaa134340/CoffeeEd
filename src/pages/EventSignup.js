@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import API_URL from '../config';
 
 function EventSignUPForm() {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ function EventSignUPForm() {
 
   const fetchEvents = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/events');
+      const response = await fetch(`${API_URL}/api/events`);
       const data = await response.json();
       setEvents(data);
       if (data.length > 0) {
@@ -76,7 +77,7 @@ function EventSignUPForm() {
       console.log('Sending event signup payload:', payload);
       console.log('Payload JSON:', JSON.stringify(payload));
 
-      const response = await fetch('http://localhost:5000/api/event/signup', {
+      const response = await fetch(`${API_URL}/api/event/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

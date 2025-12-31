@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../styles/YourOrder.css";
+import API_URL from "../config";
 
 /* ===============================
    PRICING CONFIG
@@ -107,7 +108,7 @@ function YourOrder({ orderItems = [], removeFromOrder }) {
           item.category === "acai" ? "Acai Bowl" : "Item"
         }`;
 
-        const response = await fetch("http://localhost:5000/api/orders", {
+        const response = await fetch(`${API_URL}/api/orders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -404,7 +405,7 @@ function YourOrder({ orderItems = [], removeFromOrder }) {
         </button>
 
         <button type="submit" className="submit-btn">
-          Place Pickup Order ☕
+          Place Pickup Order 
         </button>
       </form>
     </div>
