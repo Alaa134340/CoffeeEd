@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import API_URL from "../config";
 import "../styles/Admin.css";
 
 import { useParams, useNavigate } from "react-router-dom";
@@ -12,7 +13,7 @@ function UpdateMenuItem() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get(`/api/menu/${id}`)
+    axios.get(`${API_URL}/api/menu/${id}`)
       .then(res => {
         // If backend returns an array, use res.data[0], else res.data
         const data = Array.isArray(res.data) ? res.data[0] : res.data;
@@ -38,7 +39,7 @@ function UpdateMenuItem() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`/api/menu/${id}`, form);
+      await axios.put(`${API_URL}/api/menu/${id}`, form);
       navigate('/admin/menu');
     } catch (err) {
       setError("Failed to update menu item");

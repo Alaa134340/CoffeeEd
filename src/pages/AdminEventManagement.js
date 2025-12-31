@@ -4,6 +4,7 @@ import AddEvent from "./AddEvent";
 import EditEvent from "./EditEvent";
 import DeleteEvent from "./DeleteEvent";
 import "../styles/Admin.css";
+import API_URL from "../config";
 
 function AdminEventManagement() {
   const [events, setEvents] = useState([]);
@@ -14,7 +15,7 @@ function AdminEventManagement() {
 
   const fetchEvents = () => {
     setLoading(true);
-    fetch("/api/events")
+    fetch(`${API_URL}/api/events`)
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch events");
         return res.json();

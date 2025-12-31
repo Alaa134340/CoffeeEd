@@ -125,7 +125,7 @@ function OurEvents() {
                     )}
                     {isAdminLoggedIn() && (
                       <Link 
-                        to="/AdminEventManagement" 
+                        to="/admin/events" 
                         style={{
                           display: "inline-block",
                           backgroundColor: "#5A3E36",

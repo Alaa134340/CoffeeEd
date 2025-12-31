@@ -1,6 +1,7 @@
 
 import React, { useState } from "react";
 import axios from "axios";
+import API_URL from "../config";
 import "../styles/Admin.css";
 
 
@@ -26,7 +27,7 @@ function AddMenuItem({ onAdd }) {
     if (imageFile) {
       formData.append("image", imageFile);
     }
-    await axios.post("/api/menu", formData, {
+    await axios.post(`${API_URL}/api/menu`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     setForm({ name: "", description: "", price: "", category: "coffee" });

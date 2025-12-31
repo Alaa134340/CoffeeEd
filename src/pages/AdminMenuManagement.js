@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import "../styles/Admin.css";
+import API_URL from "../config";
 
 function AdminMenuManagement() {
   const [menu, setMenu] = useState([]);
@@ -10,7 +11,7 @@ function AdminMenuManagement() {
   const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
-    axios.get("/api/menu")
+    axios.get(`${API_URL}/api/menu`)
       .then(res => {
         setMenu(res.data);
         setLoading(false);
@@ -24,7 +25,7 @@ function AdminMenuManagement() {
   const handleDelete = (id) => {
     if (!window.confirm("Are you sure you want to delete this menu item?")) return;
     setDeletingId(id);
-    axios.delete(`/api/menu/${id}`)
+    axios.delete(`${API_URL}/api/menu/${id}`)
       .then(() => {
         setMenu(menu.filter(item => item.id !== id));
         setDeletingId(null);

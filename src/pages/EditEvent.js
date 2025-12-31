@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import API_URL from "../config";
 import "../styles/Admin.css";
 
 function EditEvent({ event, onUpdate, onCancel }) {
@@ -11,7 +12,7 @@ function EditEvent({ event, onUpdate, onCancel }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.put(`/api/events/${event.id}`, form);
+    await axios.put(`${API_URL}/api/events/${event.id}`, form);
     if (onUpdate) onUpdate();
   };
 
