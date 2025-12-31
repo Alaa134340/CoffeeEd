@@ -66,3 +66,110 @@
   max-width: 60px;
   max-height: 60px;
 }
+/* Admin Form Container */
+.admin-form-container {
+  max-width: 600px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 5px 15px rgba(90, 62, 54, 0.2);
+}
+
+.admin-form-container h2 {
+  color: #5A3E36;
+  font-family: 'Lobster', cursive;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2rem;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #5A3E36;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #d0bfb1;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #5A3E36;
+  box-shadow: 0 0 5px rgba(90, 62, 54, 0.3);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.image-preview {
+  margin-top: 15px;
+  padding: 15px;
+  background: #f5ede2;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.image-preview p {
+  color: #666;
+  font-size: 14px;
+  margin: 0;
+}
+
+.admin-form-container button {
+  width: 100%;
+  padding: 12px;
+  background: #5A3E36;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.admin-form-container button:hover {
+  background: #3D2C27;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(90, 62, 54, 0.3);
+}
+
+.admin-form-container button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #f5c6cb;
+}

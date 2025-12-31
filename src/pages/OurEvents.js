@@ -48,32 +48,105 @@ function OurEvents() {
         ) : error ? (
           <div style={{color:'red'}}>{error}</div>
         ) : events.length === 0 ? (
-          <div>No events available.</div>
+          <div style={{ textAlign: 'center', padding: '40px' }}>
+            <p style={{ fontSize: '18px', color: '#666' }}>No events available at the moment.</p>
+          </div>
         ) : (
-          events.map(event => (
-            <div className="card mb-4 shadow-lg border-0" style={{ backgroundColor: "#E8D7C5" }} key={event.id}>
-              <div className="row g-0">
-                <div className="col-md-4">
-                  {event.image_path && (
-                    <img src={event.image_path} alt={event.name} style={{ width: '100%', height: '250px', objectFit: 'cover' }} />
-                  )}
-                </div>
-                <div className="col-md-8">
-                  <div className="card-body">
-                    <h4 className="card-title" style={{ fontFamily: "'Lobster', cursive", color: "#5A3E36" }}>{event.name}</h4>
-                    <p className="card-text" style={{ color: "#3D2C27" }}>{event.description}</p>
-                    
+          <div style={{ display: 'grid', gap: '30px' }}>
+            {events.map(event => (
+              <div key={event.id} style={{
+                backgroundColor: "#fff",
+                borderRadius: "15px",
+                overflow: "hidden",
+                boxShadow: "0 5px 15px rgba(90, 62, 54, 0.2)",
+                display: "flex",
+                flexDirection: window.innerWidth < 768 ? "column" : "row"
+              }}>
+                {event.image_path && (
+                  <div style={{
+                    flex: "0 0 40%",
+                    minHeight: "250px"
+                  }}>
+                    <img 
+                      src={event.image_path} 
+                      alt={event.name} 
+                      style={{ 
+                        width: '100%', 
+                        height: '100%', 
+                        objectFit: 'cover' 
+                      }} 
+                    />
+                  </div>
+                )}
+                <div style={{
+                  flex: "1",
+                  padding: "30px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between"
+                }}>
+                  <div>
+                    <h3 style={{ 
+                      fontFamily: "'Lobster', cursive", 
+                      color: "#5A3E36",
+                      marginBottom: "15px",
+                      fontSize: "24px"
+                    }}>
+                      {event.name}
+                    </h3>
+                    <p style={{ 
+                      color: "#555", 
+                      lineHeight: "1.6",
+                      marginBottom: "20px"
+                    }}>
+                      {event.description}
+                    </p>
+                  </div>
+                  
+                  <div>
                     {!isAdminLoggedIn() && (
-                      <Link to="/eventsignup" className="btn btn-dark">Sign Up</Link>
+                      <Link 
+                        to="/eventsignup" 
+                        style={{
+                          display: "inline-block",
+                          backgroundColor: "#5A3E36",
+                          color: "white",
+                          padding: "10px 25px",
+                          borderRadius: "8px",
+                          textDecoration: "none",
+                          fontWeight: "600",
+                          transition: "background-color 0.3s"
+                        }}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = "#3D2C27"}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = "#5A3E36"}
+                      >
+                        📅 Sign Up for Event
+                      </Link>
                     )}
                     {isAdminLoggedIn() && (
-                      <span style={{color:'#888'}}><Link to="/AdminEventManagement" className="btn btn-dark">Manage</Link></span>
+                      <Link 
+                        to="/AdminEventManagement" 
+                        style={{
+                          display: "inline-block",
+                          backgroundColor: "#5A3E36",
+                          color: "white",
+                          padding: "10px 25px",
+                          borderRadius: "8px",
+                          textDecoration: "none",
+                          fontWeight: "600",
+                          transition: "background-color 0.3s"
+                        }}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = "#3D2C27"}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = "#5A3E36"}
+                      >
+                        ⚙️ Manage Events
+                      </Link>
                     )}
                   </div>
                 </div>
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         )}
       </div>
     </div>
