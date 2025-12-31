@@ -1,5 +1,6 @@
 
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { logoutAdmin, logoutUser } from "../utils/auth";
 import "../styles/NavBar.css";
 
 function NavBar() {
@@ -8,6 +9,16 @@ function NavBar() {
     if (navbarToggler && navbarToggler.classList.contains('show')) {
       navbarToggler.classList.remove('show');
     }
+  };
+  const isAdmin = !!localStorage.getItem("adminToken");
+  const isUserLoggedIn = !!localStorage.getItem("userId");
+  const username = localStorage.getItem("username");
+  const navigate = useNavigate();
+  
+  const handleLogout = () => {
+    logoutAdmin();
+    logoutUser();
+    navigate("/");
   };
 
   return (
@@ -60,6 +71,12 @@ function NavBar() {
             </li>
 
             <li className="nav-item">
+              <NavLink className="nav-link" to="/orders" onClick={closeNavbar}>
+                My Orders
+              </NavLink>
+            </li>
+
+            <li className="nav-item">
               <NavLink className="nav-link" to="/about" onClick={closeNavbar}>
                 Our Story
               </NavLink>
@@ -71,6 +88,61 @@ function NavBar() {
               </NavLink>
             </li>
 
+            {!isAdmin && !isUserLoggedIn && (
+              <>
+                <li className="nav-item">
+                  <NavLink className="nav-link btn btn-outline-primary" to="/signin" onClick={closeNavbar} style={{marginLeft: 10}}>
+                    Sign In
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link btn btn-outline-success" to="/signup" onClick={closeNavbar} style={{marginLeft: 10}}>
+                    Sign Up
+                  </NavLink>
+                </li>
+              </>
+            )}
+            {!isAdmin && isUserLoggedIn && (
+              <>
+                <li className="nav-item">
+                  <span className="nav-link">Welcome, {username}!</span>
+                </li>
+                <li className="nav-item">
+                  <button className="btn btn-outline-danger ms-2" onClick={handleLogout} style={{marginLeft: 10}}>
+                    Logout
+                  </button>
+                </li>
+              </>
+            )}
+            {isAdmin && (
+              <>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/admin/menu" onClick={closeNavbar}>
+                    Admin Menu
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/admin/events" onClick={closeNavbar}>
+                    Admin Events
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/admin/orders" onClick={closeNavbar}>
+                    Admin Orders
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/admin/event-signups" onClick={closeNavbar}>
+                    Event Signups
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <button className="btn btn-outline-danger ms-2" onClick={handleLogout} style={{marginLeft: 10}}>
+                    Logout
+                  </button>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>

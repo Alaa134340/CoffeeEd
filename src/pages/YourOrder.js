@@ -1,107 +1,180 @@
 import React, { useState } from "react";
-import '../styles/YourOrder.css';
+import "../styles/YourOrder.css";
 
-function YourOrder({ orderItems, removeFromOrder }) {
-  
-  const emptyItem = {
-    category: "",      
-    coffeeType: "",
-    size: "",
-    milk: "",
-    sweetness: "",
+/* ===============================
+   PRICING CONFIG
+================================ */
+const PRICES = {
+  coffee: 4.0,
+  smoothie: 5.5,
+  pastry: 3.5,
+  acai: 6.5
+};
+
+const ADDON_PRICE = 0.75;
+
+/* Count comma-separated add-ons */
+const countAddons = (text) => {
+  if (!text) return 0;
+  return text.split(",").filter(a => a.trim() !== "").length;
+};
+
+function YourOrder({ orderItems = [], removeFromOrder }) {
+
+  const defaultItem = {
+    category: "coffee",
+    coffeeType: "Latte",
+    size: "Medium",
+    milk: "Whole Milk",
+    sweetness: "Normal",
+    temp: "Hot",
     addons: "",
-    temp: "",
+    cupMessage: false,
     fruit: "",
     pastryType: "",
-    acaiAddons: "",
-    cupMessage: false,
+    acaiAddons: ""
   };
 
-  const [items, setItems] = useState([ { ...emptyItem } ]);
+  const [items, setItems] = useState([{ ...defaultItem }]);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const [orderInfo, setOrderInfo] = useState({
     name: "",
     pickupTime: "",
-    instructions: "",
+    instructions: ""
   });
 
-  
+  /* ===============================
+     HANDLERS
+  ================================ */
   const handleOrderInfoChange = (e) => {
     const { name, value } = e.target;
-    setOrderInfo((prev) => ({ ...prev, [name]: value }));
+    setOrderInfo(prev => ({ ...prev, [name]: value }));
   };
 
- 
-  const handleItemChange = (index, e) => {
-    const { name, value, type, checked } = e.target;
+  const handleItemChange = (index, name, value) => {
     const updated = [...items];
-
-    updated[index][name] = type === "checkbox" ? checked : value;
+    updated[index][name] = value;
     setItems(updated);
   };
 
   const addItem = () => {
-    setItems((prev) => [...prev, { ...emptyItem }]);
+    setItems(prev => [...prev, { ...prev[prev.length - 1] }]);
   };
 
-  
   const removeItem = (index) => {
     if (items.length === 1) return;
     setItems(items.filter((_, i) => i !== index));
   };
 
-  
-  const handleSubmit = (e) => {
+  /* ===============================
+     PRICE CALCULATIONS
+  ================================ */
+  const calculateItemPrice = (item) => {
+    const base = PRICES[item.category] || 0;
+
+    const addonsCount =
+      countAddons(item.addons) +
+      countAddons(item.acaiAddons);
+
+    return base + addonsCount * ADDON_PRICE;
+  };
+
+  const calculateTotal = () => {
+    return items.reduce((sum, item) => sum + calculateItemPrice(item), 0);
+  };
+
+  /* ===============================
+     SUBMIT
+  ================================ */
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Your pickup order has been placed! Thank you");
-    //console.log({ orderInfo, items });
+
+    // Check if user is logged in
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      alert("Please sign in first to place an order");
+      return;
+    }
+
+    try {
+      // Send each item as an order to the backend
+      for (const item of items) {
+        const itemDescription = `${item.category.toUpperCase()} - ${
+          item.category === "coffee" ? item.coffeeType :
+          item.category === "smoothie" ? item.smoothie :
+          item.category === "pastry" ? item.pastryType :
+          item.category === "acai" ? "Acai Bowl" : "Item"
+        }`;
+
+        const response = await fetch("http://localhost:5000/api/orders", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "user-id": userId,
+          },
+          body: JSON.stringify({
+            item: itemDescription,
+            quantity: 1,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to place order");
+        }
+      }
+
+      alert("Your order has been placed successfully! ☕");
+      setItems([{ ...defaultItem }]);
+      setOrderInfo({ name: "", pickupTime: "", instructions: "" });
+    } catch (error) {
+      console.error(error);
+      alert("Error placing order. Please try again.");
+    }
   };
 
   return (
-    <div className="form-container" > 
-     <div style={{ fontFamily: "'Lobster', cursive", color: "#5A3E36" }}><h1>Your Order</h1></div>
+    <div className="form-container">
 
-      {/* Items from Menu */}
+      <h1 style={{ fontFamily: "Lobster, cursive", color: "#5A3E36" }}>
+        Your Order
+      </h1>
+
+      {/* ===============================
+          MENU ITEMS
+      ================================ */}
       {orderItems.length > 0 && (
         <div className="menu-items-section">
-          <h2>Items from Menu</h2>
-          <div className="menu-items-list">
-            {orderItems.map((item) => (
-              <div key={item.id} className="menu-order-item">
-                <img src={item.image} alt={item.name} className="order-item-img" />
-                <div className="order-item-details">
-                  <h4>{item.name}</h4>
-                  <p className="order-item-category">{item.category}</p>
-                  <p className="order-item-price">{item.price}</p>
-                </div>
-                <button
-                  type="button"
-                  className="remove-menu-item-btn"
-                  onClick={() => removeFromOrder(item.id)}
-                >
-                  Remove
-                </button>
+          <h3>From Menu</h3>
+          {orderItems.map(item => (
+            <div key={item.id} className="menu-order-item">
+              <img src={item.image} alt={item.name} />
+              <div>
+                <strong>{item.name}</strong>
+                <p>{item.price}</p>
               </div>
-            ))}
-          </div>
-          <hr />
+              <button onClick={() => removeFromOrder(item.id)}>
+                Remove
+              </button>
+            </div>
+          ))}
         </div>
       )}
 
-    
       <form onSubmit={handleSubmit}>
-     
-        <label>Name:</label>
+
+        {/* ===============================
+            ORDER INFO
+        ================================ */}
+        <label>Name</label>
         <input
-          type="text"
           name="name"
           required
           value={orderInfo.name}
           onChange={handleOrderInfoChange}
         />
 
-        
-        <label>Pickup Time:</label>
+        <label>Pickup Time</label>
         <input
           type="time"
           name="pickupTime"
@@ -110,217 +183,228 @@ function YourOrder({ orderItems, removeFromOrder }) {
           onChange={handleOrderInfoChange}
         />
 
-        
-        <label>General Instructions:</label>
+        <label>Instructions (optional)</label>
         <textarea
           name="instructions"
-          placeholder="Optional: Light ice, no foam..."
+          placeholder="Light ice, no foam..."
           value={orderInfo.instructions}
           onChange={handleOrderInfoChange}
         />
 
-        <hr />
-
-        
+        {/* ===============================
+            ORDER ITEMS
+        ================================ */}
         {items.map((item, index) => (
-          <div className="option-group" key={index}>
-            <h4>
-              Item {index + 1}
-              <button
-                type="button"
-                id={`remove-item-btn-${index}`}
-                className="remove-btn"
-                onClick={() => removeItem(index)}
-              >
-                remove item from your order
-              </button>
-            </h4>
+          <div className="order-card" key={index}>
 
-            {/* Category */}
-            <label>Category:</label>
-            <select
-              name="category"
-              required
-              value={item.category}
-              onChange={(e) => handleItemChange(index, e)}
-            >
-              <option value="">Select Type</option>
-              <option value="coffee">Coffee</option>
-              <option value="smoothie">Smoothie</option>
-              <option value="pastry">Pastry</option>
-              <option value="acai">Açaí Bowl</option>
-            </select>
+            <div className="card-header">
+              <h4>Item {index + 1}</h4>
+              <button type="button" onClick={() => removeItem(index)}>✕</button>
+            </div>
 
-            {/* If Coffee */}
+            {/* CATEGORY TABS */}
+            <div className="category-tabs">
+              {["coffee", "smoothie", "pastry", "acai"].map(cat => (
+                <button
+                  type="button"
+                  key={cat}
+                  className={item.category === cat ? "active" : ""}
+                  onClick={() => handleItemChange(index, "category", cat)}
+                >
+                  {cat.toUpperCase()}
+                </button>
+              ))}
+            </div>
+
+            {/* COFFEE */}
             {item.category === "coffee" && (
               <>
-                <label>Coffee Type:</label>
+                <label>Coffee</label>
                 <select
-                  name="coffeeType"
-                  required
                   value={item.coffeeType}
-                  onChange={(e) => handleItemChange(index, e)}
+                  onChange={e =>
+                    handleItemChange(index, "coffeeType", e.target.value)
+                  }
                 >
-                  <option value="">Select Coffee</option>
+                  <option>Latte</option>
                   <option>Espresso</option>
                   <option>Americano</option>
-                  <option>Latte</option>
                   <option>Cappuccino</option>
                   <option>Mocha</option>
-                  <option>Macchiato</option>
                   <option>Cold Brew</option>
                 </select>
 
-                <label>Size:</label>
+                <label>Size</label>
                 <select
-                  name="size"
-                  required
                   value={item.size}
-                  onChange={(e) => handleItemChange(index, e)}
+                  onChange={e =>
+                    handleItemChange(index, "size", e.target.value)
+                  }
                 >
-                  <option value="">Select Size</option>
                   <option>Small</option>
                   <option>Medium</option>
                   <option>Large</option>
                 </select>
 
-                <label>Milk:</label>
+                <label>Temperature</label>
                 <select
-                  name="milk"
-                  value={item.milk}
-                  onChange={(e) => handleItemChange(index, e)}
-                >
-                  <option value="">No Milk</option>
-                  <option>Whole Milk</option>
-                  <option>Skim Milk</option>
-                  <option>Almond Milk</option>
-                  <option>Oat Milk</option>
-                  <option>Soy Milk</option>
-                </select>
-
-                <label>Sweetness:</label>
-                <select
-                  name="sweetness"
-                  value={item.sweetness}
-                  onChange={(e) => handleItemChange(index, e)}
-                >
-                  <option>No Sugar</option>
-                  <option>Less Sweet</option>
-                  <option>Normal</option>
-                  <option>Extra Sweet</option>
-                </select>
-
-                <label>Temperature:</label>
-                <select
-                  name="temp"
-                  required
                   value={item.temp}
-                  onChange={(e) => handleItemChange(index, e)}
+                  onChange={e =>
+                    handleItemChange(index, "temp", e.target.value)
+                  }
                 >
-                  <option value="">Select</option>
                   <option>Hot</option>
                   <option>Iced</option>
                   <option>Extra Hot</option>
                 </select>
 
-                <label>Add-ons:</label>
-                <input
-                  type="text"
-                  name="addons"
-                  placeholder="Extra caramel, 2 shots..."
-                  value={item.addons}
-                  onChange={(e) => handleItemChange(index, e)}
-                />
+                <button
+                  type="button"
+                  className="link-btn"
+                  onClick={() => setShowAdvanced(!showAdvanced)}
+                >
+                  {showAdvanced ? "Hide Options" : "Customize"}
+                </button>
 
-                <label className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    name="cupMessage"
-                    checked={item.cupMessage}
-                    onChange={(e) => handleItemChange(index, e)}
-                  />
-                  Write a message on the cup?
-                </label>
+                {showAdvanced && (
+                  <>
+                    <label>Milk</label>
+                    <select
+                      value={item.milk}
+                      onChange={e =>
+                        handleItemChange(index, "milk", e.target.value)
+                      }
+                    >
+                      <option>Whole Milk</option>
+                      <option>Skim Milk</option>
+                      <option>Oat Milk</option>
+                      <option>Almond Milk</option>
+                    </select>
+
+                    <label>Sweetness</label>
+                    <select
+                      value={item.sweetness}
+                      onChange={e =>
+                        handleItemChange(index, "sweetness", e.target.value)
+                      }
+                    >
+                      <option>No Sugar</option>
+                      <option>Less Sweet</option>
+                      <option>Normal</option>
+                      <option>Extra Sweet</option>
+                    </select>
+
+                    <label>Add-ons ($0.75 each)</label>
+                    <input
+                      placeholder="Extra shot, caramel..."
+                      value={item.addons}
+                      onChange={e =>
+                        handleItemChange(index, "addons", e.target.value)
+                      }
+                    />
+                  </>
+                )}
               </>
             )}
 
+            {/* SMOOTHIE */}
             {item.category === "smoothie" && (
               <>
-                <label>Fruit Type:</label>
+                <label>Fruit</label>
                 <select
-                  name="fruit"
-                  required
                   value={item.fruit}
-                  onChange={(e) => handleItemChange(index, e)}
+                  onChange={e =>
+                    handleItemChange(index, "fruit", e.target.value)
+                  }
                 >
-                  <option value="">Select Fruit</option>
                   <option>Strawberry</option>
                   <option>Mango</option>
                   <option>Banana</option>
                   <option>Blueberry</option>
-                  <option>Peach</option>
                 </select>
 
-                <label>Add-ons:</label>
+                <label>Add-ons ($0.75 each)</label>
                 <input
-                  type="text"
-                  name="addons"
-                  placeholder="Honey, chia seeds..."
+                  placeholder="Chia seeds, honey..."
                   value={item.addons}
-                  onChange={(e) => handleItemChange(index, e)}
+                  onChange={e =>
+                    handleItemChange(index, "addons", e.target.value)
+                  }
                 />
               </>
             )}
 
-           
+            {/* PASTRY */}
             {item.category === "pastry" && (
               <>
-                <label>Pastry Type:</label>
+                <label>Pastry</label>
                 <select
-                  name="pastryType"
-                  required
                   value={item.pastryType}
-                  onChange={(e) => handleItemChange(index, e)}
+                  onChange={e =>
+                    handleItemChange(index, "pastryType", e.target.value)
+                  }
                 >
-                  <option value="">Select Pastry</option>
                   <option>Croissant</option>
                   <option>Muffin</option>
-                  <option>Chocolate Cake</option>
-                  <option>Cheesecake</option>
                   <option>Cookies</option>
+                  <option>Cheesecake</option>
                 </select>
               </>
             )}
 
-          
+            {/* ACAI */}
             {item.category === "acai" && (
               <>
-                <label>Açaí Add-ons:</label>
+                <label>Add-ons ($0.75 each)</label>
                 <input
-                  type="text"
-                  name="acaiAddons"
-                  placeholder="Granola, banana, honey..."
+                  placeholder="Granola, banana..."
                   value={item.acaiAddons}
-                  onChange={(e) => handleItemChange(index, e)}
+                  onChange={e =>
+                    handleItemChange(index, "acaiAddons", e.target.value)
+                  }
                 />
               </>
             )}
+
           </div>
         ))}
 
-        
-        <button
-          type="button"
-          id="add-item-btn"
-          className="add-btn"
-          onClick={addItem}
-        >
-           Add Another Item
+        {/* ===============================
+            ORDER SUMMARY
+        ================================ */}
+        <div className="order-summary">
+          <h3>Order Summary</h3>
+
+          {items.map((item, index) => (
+            <div className="summary-row" key={index}>
+              <span>
+                {item.category === "coffee" && item.coffeeType}
+                {item.category === "smoothie" && `${item.fruit} Smoothie`}
+                {item.category === "pastry" && item.pastryType}
+                {item.category === "acai" && "Açaí Bowl"}
+              </span>
+              <span>${calculateItemPrice(item).toFixed(2)}</span>
+            </div>
+          ))}
+
+          <hr />
+
+          <div className="summary-total">
+            <strong>Total</strong>
+            <strong>${calculateTotal().toFixed(2)}</strong>
+          </div>
+
+          <p className="addons-note">
+            * Each add-on costs $0.75
+          </p>
+        </div>
+
+        <button type="button" className="add-btn" onClick={addItem}>
+          + Add Another Item
         </button>
 
-        
-        <button type="submit" id="submit-order-btn" className="submit-btn">
-          Place Pickup Order
+        <button type="submit" className="submit-btn">
+          Place Pickup Order ☕
         </button>
       </form>
     </div>

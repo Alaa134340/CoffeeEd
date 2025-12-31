@@ -16,7 +16,7 @@ function Footer() {
       }}
     >
       <p style={{ margin: 0, fontFamily: "Lobster, cursive" }}>
-        © {new Date().getFullYear()} Coffee Cave |Opening Hours:7:30 a.m. till 7:30 p.m. Monday through Saturday| All Rights Reserved 
+        © {new Date().getFullYear()} Coffee Haven|Opening Hours:7:30 a.m. till 7:30 p.m. Monday through Saturday| All Rights Reserved 
       </p>
       <div className="socialMedia">
         <InstagramIcon style={{ verticalAlign: 'middle', marginRight: 8 }} />

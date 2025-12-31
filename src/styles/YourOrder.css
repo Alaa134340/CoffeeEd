@@ -1,48 +1,52 @@
-/* Overall page styling */
+/* ===============================
+   GLOBAL
+================================ */
 body {
-  background-color:  #f7f2ec;
+  background-color: #f7f2ec;
   font-family: "Poppins", sans-serif;
   margin: 0;
   padding: 0;
 }
 
-/* Form container */
+/* ===============================
+   FORM CONTAINER
+================================ */
 .form-container {
-  max-width: 500px;
+  max-width: 520px;
   margin: 40px auto;
   background: #f7f2ec;
   padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(120, 93, 72, 0.2);
+  border-radius: 18px;
+  box-shadow: 0 6px 18px rgba(120, 93, 72, 0.25);
   border: 1px solid #e5d3c6;
 }
 
 .form-container h1 {
   text-align: center;
   color: #5a3e2b;
-  margin-bottom: 20px;
-  font-size: 28px;
+  margin-bottom: 25px;
+  font-size: 30px;
 }
 
-/* Labels */
+/* ===============================
+   FORM ELEMENTS
+================================ */
 form label {
   display: block;
   font-weight: 600;
   color: #4a3324;
-  margin-top: 15px;
-  margin-bottom: 3px;
+  margin-top: 14px;
+  margin-bottom: 4px;
 }
 
-/* Inputs + Dropdowns */
 form input,
 form select,
 form textarea {
   width: 100%;
   padding: 10px;
   border: 1px solid #d0bfb1;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 15px;
-  box-sizing: border-box;
   background: #fff;
   color: #4a3324;
 }
@@ -52,168 +56,190 @@ form select:focus,
 form textarea:focus {
   outline: none;
   border-color: #a17353;
-  box-shadow: 0 0 4px rgba(161, 115, 83, 0.4);
+  box-shadow: 0 0 5px rgba(161, 115, 83, 0.4);
 }
 
-/* Checkbox styling */
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 500;
-  color: #4a3324;
-  margin-top: 15px;
-}
-
-/* Textarea */
 textarea {
-  height: 80px;
   resize: none;
+  height: 80px;
 }
 
-/* Individual button styles */
-#add-item-btn {
+/* ===============================
+   ORDER CARD (NEW)
+================================ */
+.order-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 18px;
+  margin-top: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-left: 4px solid #c48f66;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header h4 {
+  margin: 0;
+  color: #382822;
+}
+
+.card-header button {
+  background: #d9534f;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.card-header button:hover {
+  background: #c9302c;
+}
+
+/* ===============================
+   CATEGORY TABS
+================================ */
+.category-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 15px 0;
+}
+
+.category-tabs button {
+  flex: 1;
+  padding: 8px 0;
+  border-radius: 10px;
+  border: none;
+  background: #eee;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.category-tabs button.active {
+  background: #5a3520;
+  color: white;
+}
+
+.category-tabs button:hover {
+  background: #c48f66;
+  color: #fff;
+}
+
+/* ===============================
+   LINK BUTTON (CUSTOMIZE)
+================================ */
+.link-btn {
+  margin-top: 10px;
+  background: none;
+  border: none;
+  color: #5a3520;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+}
+
+.link-btn:hover {
+  text-decoration: underline;
+}
+
+/* ===============================
+   MAIN ACTION BUTTONS
+================================ */
+.add-btn,
+.submit-btn {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   margin-top: 20px;
   background-color: #5a3520;
   color: #fff;
   border: none;
-  border-radius: 10px;
+  border-radius: 14px;
   font-size: 17px;
   font-weight: 600;
   cursor: pointer;
   transition: 0.3s;
 }
-#add-item-btn:hover {
-  background-color: #5a3520;
-  transform: translateY(-2px);
-}
 
-#submit-order-btn {
-  width: 100%;
-  padding: 14px;
-  margin-top: 25px;
-  background-color: #5a3520;
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  font-size: 18px;
-  font-weight: 700;
-  cursor: pointer;
-  letter-spacing: 0.5px;
-  transition: 0.3s;
-}
-#submit-order-btn:hover {
+.add-btn:hover,
+.submit-btn:hover {
   background-color: #402417;
   transform: translateY(-2px);
 }
 
-[id^="remove-item-btn-"] {
-  display: inline-block;
-  margin-left: 15px;
-  padding: 6px 10px;
-  background-color:#5a3520;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  vertical-align: middle;
-  transition: 0.25s;
-}
-[id^="remove-item-btn-"]:hover {
-  background-color:#5a3520;
-  transform: translateY(-1px);
-}
-
-/* Smoothie fruits dropdown & pastry/acai sections */
-.option-group {
-  margin-top: 20px;
-  padding: 15px;
-  background: #fff3e6;
-  border-left: 4px solid #c48f66;
-  border-radius: 12px;
-}
-
-.option-group label {
-  margin-top: 10px;
-}
-
-/* Menu Items Section */
+/* ===============================
+   MENU ITEMS SECTION
+================================ */
 .menu-items-section {
   margin-bottom: 30px;
   background: #fff5f0;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 14px;
 }
 
-.menu-items-section h2 {
+.menu-items-section h3 {
   color: #5a3e2b;
   margin-bottom: 15px;
-  font-size: 22px;
-}
-
-.menu-items-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
 }
 
 .menu-order-item {
   display: flex;
   align-items: center;
   background: white;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 14px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   gap: 15px;
+  margin-bottom: 12px;
 }
 
-.order-item-img {
-  width: 80px;
-  height: 80px;
+.menu-order-item img {
+  width: 70px;
+  height: 70px;
   object-fit: cover;
   border-radius: 8px;
 }
 
-.order-item-details {
-  flex: 1;
-}
-
-.order-item-details h4 {
-  margin: 0 0 5px 0;
+.menu-order-item strong {
   color: #382822;
-  font-size: 18px;
 }
 
-.order-item-category {
-  color: #666;
-  font-size: 14px;
-  text-transform: capitalize;
-  margin: 0;
-}
-
-.order-item-price {
+.menu-order-item p {
+  margin: 3px 0;
   color: #bf6b53;
-  font-weight: bold;
-  font-size: 16px;
-  margin: 5px 0 0 0;
+  font-weight: 600;
 }
 
-.remove-menu-item-btn {
+.menu-order-item button {
   background-color: #d9534f;
   color: white;
   border: none;
-  padding: 8px 15px;
-  border-radius: 6px;
-  font-size: 14px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.remove-menu-item-btn:hover {
+.menu-order-item button:hover {
   background-color: #c9302c;
+}
+
+/* ===============================
+   MOBILE IMPROVEMENTS
+================================ */
+@media (max-width: 600px) {
+  .form-container {
+    margin: 20px;
+    padding: 20px;
+  }
+
+  .category-tabs {
+    flex-wrap: wrap;
+  }
 }

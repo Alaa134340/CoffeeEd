@@ -1,208 +1,118 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import "../styles/MainMenu.css";
-import espresso from "../assets/espresso.jpg";
-import americano from "../assets/americano.jpg";
-import vanillaLatte from "../assets/vanillalatte.jpg";
-import caffelatte from "../assets/caffelatte.jpg";
-import matchalatte from "../assets/matchalatte.jpg";
-import cappuccino from "../assets/cappucino.jpg";
-import macchiato from "../assets/macchiato.jpg";
-import mocha from "../assets/mocha.jpg";
-import flatwhite from "../assets/flatwhite.jpg";
-import coldbrew from "../assets/coldbrew.jpg";
-import strawberrySmoothie from "../assets/strawberrySmoothie.jpg";
-import tropicalMangoSmoothie from "../assets/mangoSmoothie.jpg";
-import berryBlastSmoothie from "../assets/berryBlast.jpg";
-import greenDetoxSmoothie from "../assets/greenDetox.jpg";
-import croissant from "../assets/croissant.jpg";
-import chocolateCroissant from "../assets/chococroissant.jpg";
-import cinnamonRoll from "../assets/cinnamoroll.jpg";
-import muffin from "../assets/muffin.jpg";
-import donut from "../assets/donuts.jpg";  
-import acaii from "../assets/acaii.jpg";
-import berryAcai from "../assets/berryacaii.jpg";
-import proteinAcai from "../assets/proteinacaii.jpg";
-import tropicalAcai from "../assets/tropicalAcaii.webp";
+
+import { isAdminLoggedIn } from "../utils/auth";
+import { Link } from "react-router-dom";
 function Menu({ addToOrder }) {
 
+  const [menuData, setMenuData] = useState({});
+  const [deletingId, setDeletingId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/menu')
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to fetch menu');
+        return res.json();
+      })
+      .then((data) => {
+        // Group items by category
+        const grouped = {};
+        data.forEach(item => {
+          if (!grouped[item.category]) grouped[item.category] = [];
+          grouped[item.category].push(item);
+        });
+        setMenuData(grouped);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
   const handleAddToOrder = (item, category) => {
-    addToOrder({ ...item, category });
-    alert(`${item.name} added to order!`);
+    if (!isAdminLoggedIn()) {
+      addToOrder({ ...item, category });
+      alert(`${item.name} added to order!`);
+    }
   };
 
-const menuData = {
-  coffee: [
-    {
-      name: "Espresso",
-      description: "Rich, bold single or double shots according to your preference",
-      price: "$2.00",
-      image: espresso
-    },
-     {
-      name: "Americano",
-      description: "Espresso with water.You have the option to have it hot or iced.",
-      price: "$3.00",
-      image: americano
-    },
-    {
-      name: "Vanilla Latte",
-      description: "Espresso with steamed milk with art on top if you have it hot.",
-      price: "$4.00",
-      image: vanillaLatte
-    },
-     {
-      name: "Caffe Latte",
-      description: "Espresso with steamed milk.You have the option to have it hot or iced.",
-      price: "$4.25",
-      image: caffelatte
-    },
-     {
-      name: "Matcha Latte",
-      description: "Espresso with steamed milk.You have the option to have it hot or iced.",
-      price: "$4.00",
-      image: matchalatte
-    },
-    {
-      name: "Cappuccino",
-      description: "Espresso, steamed milk & foam",
-      price: "$4.5",
-      image: cappuccino
-    },
-     {
-      name: "Macchiato",
-      description: "Espresso with steamed milk.You have the option to have it hot or iced.",
-      price: "$3.75",
-      image: macchiato
-    },
-     {
-      name: "Mocha",
-      description: "Espresso with steamed milk and chocolate.You have the option to have it hot or iced.",
-      price: "$4.75",
-      image: mocha
-    },
-     {
-      name: "Flat white",
-      description: "Espresso with steamed milk.You have the option to have it hot or iced.",
-      price: "$3.50",
-      image: flatwhite
-    },
-     {
-      name: "Cold brew",
-      description: "Slow-steeped cold coffee, served chilled.",
-      price: "$3.00",
-      image: coldbrew
-    },
-  ],
-  smoothies: [
-    {
-      name: "Strawberry Banana",
-      description: "Fresh strawberries, ripe bananas, and creamy yogurt blended to perfection",
-      price: "$5.00",
-      image: strawberrySmoothie
-    },
-    {
-      name: "Tropical Mango",
-      description: "Sweet mango, tropical pineapple, and smooth coconut milk for a paradise taste",
-      price: "$5.50",
-      image: tropicalMangoSmoothie
-    },
-     {
-      name: "Berry Blast",
-      description: "Blueberries, raspberries, strawberries, and blackberries with a hint of honey",
-      price: "$5.25",
-      image: berryBlastSmoothie
-    },
-     {
-      name: "Green Detox",
-      description: "Spinach, kale, green apple, cucumber, and lemon for a refreshing cleanse",
-      price: "$5.75",
-      image: greenDetoxSmoothie
-    },
-  ],
-  pastry: [
-    {
-      name: "Croissant",
-      description: "Classic buttery, flaky French croissant baked fresh daily",
-      price: "$2.50",
-      image: croissant
-    },
-    {
-      name: "Chocolate Croissant",
-      description: "Buttery croissant filled with rich dark chocolate",
-      price: "$3.00",
-      image: chocolateCroissant
-    },
-     {
-      name: "Cinnamon Roll",
-      description: "Warm, gooey cinnamon roll topped with cream cheese frosting",
-      price: "$3.50",
-      image: cinnamonRoll
-    },
-     {
-      name: "Muffin",
-      description: "Freshly baked muffin in your choice of blueberry, chocolate chip, or banana nut",
-      price: "$2.75",
-      image: muffin
-    },
-     {
-      name: "Donut",
-      description: "Assorted glazed, chocolate, and specialty donuts made fresh each morning",
-      price: "$2.25",
-      image: donut
-    },
-  ],
-  acaiBowls: [
-    {
-      name: "Classic Açaí Bowl",
-      description: "Açaí blend topped with granola, banana, strawberry, blueberries, and honey",
-      price: "$6.00",
-      image: acaii
-    },
-    {
-      name: "Berry Açaí",
-      description: "Açaí base with mixed berries, crunchy granola, and toasted almond flakes",
-      price: "$6.50",
-      image: berryAcai
-    },
-       {
-      name: "Protein Açaí",
-      description: "Açaí blend with protein powder, peanut butter, granola, banana, and chia seeds",
-      price: "$7.00",
-      image: proteinAcai
-    },   {
-      name: "Tropical Açaí",
-      description: "Açaí topped with mango, pineapple, coconut flakes, granola, and passion fruit",
-      price: "$6.75",
-      image: tropicalAcai
-    },
+  const handleDelete = (itemId, category) => {
+    if (!window.confirm('Are you sure you want to delete this menu item?')) return;
+    setDeletingId(itemId);
+    fetch(`/api/menu/${itemId}`, { method: 'DELETE' })
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to delete item');
+        // Remove item from UI
+        setMenuData(prev => {
+          const updated = { ...prev };
+          updated[category] = updated[category].filter(item => item.id !== itemId);
+          if (updated[category].length === 0) delete updated[category];
+          return updated;
+        });
+        setDeletingId(null);
+      })
+      .catch(() => {
+        alert('Failed to delete item.');
+        setDeletingId(null);
+      });
+  };
 
-  ]
-};
+  if (loading) return <div>Loading menu...</div>;
+  if (error) return <div>Error: {error}</div>;
 
-return (
+  return (
     <div className="menu-container">
-      {Object.keys(menuData).map((category) => (
-        <div key={category} className="category-section">
-          <h2 className="category-title">{category}</h2>
-          <div className="items-grid">
-            {menuData[category].map((item, index) => (
-              <div className="menu-card" key={index}>
-                <img src={item.image} alt={item.name} />
-                <h3>{item.name}</h3>
-                <p>{item.description}</p>
-                <p className="price">{item.price}</p>
-                <button 
-                  className="add-to-order-btn"
-                  onClick={() => handleAddToOrder(item, category)}
-                >
-                  Add to Order
-                </button>
-              </div>
-            ))}
+      {Object.keys(menuData).length === 0 ? (
+        <div>No menu items available.</div>
+      ) : (
+        Object.keys(menuData).map((category) => (
+          <div key={category} className="category-section">
+            <h2 className="category-title">{category}</h2>
+            <div className="items-grid">
+              {menuData[category].map((item, index) => (
+                <div className="menu-card" key={item.id || index}>
+                  <img src={item.image || 'https://via.placeholder.com/150'} alt={item.name} />
+                  <h3>{item.name}</h3>
+                  <p>{item.description}</p>
+                  <p className="price">${parseFloat(item.price).toFixed(2)}</p>
+                  {!isAdminLoggedIn() && (
+                    <button 
+                      className="add-to-order-btn"
+                      onClick={() => handleAddToOrder(item, category)}
+                    >
+                      Add to Order
+                    </button>
+                  )}
+                  {isAdminLoggedIn() && (
+                    <>
+                      <Link
+                        to={`/admin/menu/update/${item.id}`}
+                        className="update-item-btn"
+                        style={{ marginTop: 8, display: 'block', textAlign: 'center' }}
+                      >
+                        Update
+                      </Link>
+                      <button
+                        className="delete-item-btn"
+                        style={{ background: '#b23b3b', color: '#fff', border: 'none', borderRadius: 6, padding: '6px 14px', cursor: 'pointer', marginTop: 8, display: 'block', width: '100%' }}
+                        onClick={() => handleDelete(item.id, category)}
+                        disabled={deletingId === item.id}
+                      >
+                        {deletingId === item.id ? 'Deleting...' : 'Delete'}
+                      </button>
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ))
+      )}
     </div>
   );
 }
+
 export default Menu;
